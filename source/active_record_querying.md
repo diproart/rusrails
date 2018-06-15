@@ -302,7 +302,7 @@ Client.where(first_name: 'does not exist').take!
 
 ### Получение нескольких объектов пакетами
 
-Часто необходимо перебрать огромный набор записей, когда рассылаем письма всем пользователям или импортируем некоторые данные.
+Часто необходимо перебрать огромный набор записей, например, когда рассылаем письма всем пользователям или импортируем некоторые данные.
 
 Это может показаться простым:
 
@@ -372,7 +372,7 @@ end
 Подобно опции `:start`, `:finish` позволяет указать последний ID последовательности, когда наибольший ID не тот, что вам нужен.
 Это может быть полезно, например, если хотите запустить процесс пакетирования, используя подмножество записей на основании `:start` и `:finish`
 
-Например, чтобы выслать письма только пользователям с первичным ключом  от 2000 до 10000:
+Например, чтобы выслать письма только пользователям с первичным ключом от 2000 до 10000:
 
 ```ruby
 User.find_each(start: 2000, finish: 10000) do |user|
@@ -400,7 +400,7 @@ end
 `find_in_batches` работает на классах модели, как показано выше, а также на relation:
 
 ```ruby
-Invoice.pending.find_in_batches do |invoice|
+Invoice.pending.find_in_batches do |invoices|
   pending_invoices_export.add_invoices(invoices)
 end
 ```
@@ -420,7 +420,7 @@ end
 
 Если вы хотите добавить условия в свой поиск, можете просто определить их там, подобно `Client.where("orders_count = '2'")`. Это найдет всех клиентов, где значение поля `orders_count` равно 2.
 
-WARNING: Создание условий в чистой строке подвергает вас риску SQL инъекций. Например, `Client.where("first_name LIKE '%#{params[:first_name]}%'")` не безопасно. Смотрите следующий раздел для более предпочтительного способа обработки условий с использованием массива.
+WARNING: Создание условий в чистой строке подвергает вас риску SQL-инъекций. Например, `Client.where("first_name LIKE '%#{params[:first_name]}%'")` не безопасно. Смотрите следующий раздел для более предпочтительного способа обработки условий с использованием массива.
 
 ### (array-conditions) Условия с использованием массива
 
@@ -454,9 +454,9 @@ Client.where("orders_count = #{params[:orders]}")
 
 по причине безопасности аргумента. Помещение переменной прямо в строку условий передает переменную в базу данных _как есть_. Это означает, что неэкранированная переменная, переданная пользователем, может иметь злой умысел. Если так сделать, вы подвергаете базу данных риску, так как если пользователь обнаружит, что он может использовать вашу базу данных, то он сможет сделать с ней что угодно. Никогда не помещайте аргументы прямо в строку условий!
 
-TIP: Подробнее об опасности SQL инъекций можно узнать из [Руководства Ruby On Rails по безопасности](/ruby-on-rails-security-guide).
+TIP: Подробнее об опасности SQL-инъекций можно узнать из руководства [Безопасность приложений на Rails](/ruby-on-rails-security-guide).
 
-#### Символы-заполнители в условиях
+#### Местозаполнители в условиях
 
 Подобно тому, как `(?)` заменяют параметры, можно использовать ключи в условиях совместно с соответствующим хэшем ключей/значений:
 
@@ -596,7 +596,7 @@ Client.order("orders_count ASC").order("created_at DESC")
 # SELECT * FROM clients ORDER BY orders_count ASC, created_at DESC
 ```
 
-WARNING: Если используется **MySQL 5.7.5** и выше, то при выборе полей из результирующей выборки с помощью методов, таких как `select`, `pluck` и `ids`, метод `order` вызовет исключение `ActiveRecord::StatementInvalid`, если поля, используемые в выражении `order` не включены в список выбора. Смотрите следующий раздел по выбору полей из результирующей выборки.
+WARNING: Если используется **MySQL 5.7.5** и выше, то при выборе полей из результирующей выборки с помощью методов, таких как `select`, `pluck` и `ids`; метод `order` вызовет исключение `ActiveRecord::StatementInvalid`, если поля, используемые в выражении `order`, не включены в список выбора. Смотрите следующий раздел по выбору полей из результирующей выборки.
 
 Выбор определенных полей
 ------------------------
@@ -658,7 +658,7 @@ query.distinct(false)
 Client.limit(5)
 ```
 
-возвратит максимум 5 клиентов, и, поскольку не определено смещение, будут возвращены первые 5 клиентов в таблице. Запускаемый SQL будет выглядеть подобным образом:
+возвратит максимум 5 клиентов, и, поскольку не определено смещение, будут возвращены первые 5 клиентов в таблице. Выполняемый SQL будет выглядеть подобным образом:
 
 ```sql
 SELECT * FROM clients LIMIT 5
@@ -706,7 +706,7 @@ Order.group(:status).count
 # => { 'awaiting_approval' => 7, 'paid' => 12 }
 ```
 
-SQL, который будет исполнен, будет выглядеть как-то так:
+SQL, который будет выполнен, будет выглядеть так:
 
 ```sql
 SELECT COUNT (*) AS count_all, status AS status
@@ -747,7 +747,7 @@ HAVING sum(price) > 100
 Article.where('id > 10').limit(20).order('id asc').unscope(:order)
 ```
 
-SQL, который будет выполнен:
+SQL, который будет выполнен, будет выглядеть так:
 
 ```sql
 SELECT * FROM articles WHERE id > 10 LIMIT 20
@@ -779,13 +779,13 @@ Article.order('id asc').merge(Article.unscope(:order))
 Article.where('id > 10').limit(20).order('id desc').only(:order, :where)
 ```
 
-SQL, который будет выполнен:
+SQL, который будет выполнен, будет выглядеть так:
 
 ```sql
 SELECT * FROM articles WHERE id > 10 ORDER BY id DESC
 
 # Оригинальный запрос без `only`
-SELECT "articles".* FROM "articles" WHERE (id > 10) ORDER BY id desc LIMIT 20
+SELECT * FROM articles WHERE id > 10 ORDER BY id DESC LIMIT 20
 
 ```
 
@@ -803,17 +803,17 @@ end
 Article.find(10).comments.reorder('name')
 ```
 
-SQL, который будет выполнен:
+SQL, который будет выполнен, будет выглядеть так:
 
 ```sql
-SELECT * FROM articles WHERE id = 10
+SELECT * FROM articles WHERE id = 10 LIMIT 1
 SELECT * FROM comments WHERE article_id = 10 ORDER BY name
 ```
 
-В случае, когда условие `reorder` не было использовано, запущенный SQL будет:
+В случае, когда условие `reorder` не было использовано, выполненный SQL будет:
 
 ```sql
-SELECT * FROM articles WHERE id = 10
+SELECT * FROM articles WHERE id = 10 LIMIT 1
 SELECT * FROM comments WHERE article_id = 10 ORDER BY posted_at DESC
 ```
 
@@ -825,7 +825,7 @@ SELECT * FROM comments WHERE article_id = 10 ORDER BY posted_at DESC
 Client.where("orders_count > 10").order(:name).reverse_order
 ```
 
-SQL, который будет выполнен:
+SQL, который будет выполнен, будет выглядеть так:
 
 ```sql
 SELECT * FROM clients WHERE orders_count > 10 ORDER BY name DESC
@@ -837,7 +837,7 @@ SELECT * FROM clients WHERE orders_count > 10 ORDER BY name DESC
 Client.where("orders_count > 10").reverse_order
 ```
 
-SQL, который будет выполнен:
+SQL, который будет выполнен, будет выглядеть так:
 
 ```sql
 SELECT * FROM clients WHERE orders_count > 10 ORDER BY clients.id DESC
@@ -853,7 +853,7 @@ SELECT * FROM clients WHERE orders_count > 10 ORDER BY clients.id DESC
 Article.where(trashed: true).rewhere(trashed: false)
 ```
 
-SQL, который будет выполнен:
+SQL, который будет выполнен, будет выглядеть так:
 
 ```sql
 SELECT * FROM articles WHERE `trashed` = 0
@@ -899,7 +899,7 @@ end
 Объекты только для чтения
 -------------------------
 
-Active Record предоставляет relation метод `readonly` для явного запрета изменения любого возвращаемого объекта. Любая попытка изменить запись доступную только для чтения не удастся, вызвав исключение `ActiveRecord::ReadOnlyRecord`.
+Active Record предоставляет relation метод `readonly` для явного запрета на модификацию любого из возвращаемых объектов. Любая попытка изменить запись, доступную только для чтения, не удастся, вызвав исключение `ActiveRecord::ReadOnlyRecord`.
 
 ```ruby
 client = Client.readonly.first
@@ -912,20 +912,20 @@ client.save
 Блокировка записей для обновления
 ---------------------------------
 
-Блокировка полезна для предотвращения гонки условий при обновлении записей в базе данных и обеспечения атомарного обновления.
+Блокировка полезна для предотвращения состояния гонки при обновлении записей в базе данных и обеспечения атомарного обновления.
 
 Active Record предоставляет два механизма блокировки:
 
-* Оптимистичная блокировка
-* Пессимистичная блокировка
+* Оптимистическая блокировка
+* Пессимистическая блокировка
 
-### Оптимистичная блокировка
+### Оптимистическая блокировка
 
-Оптимистичная блокировка позволяет нескольким пользователям обращаться к одной и той же записи для редактирования и предполагает минимум конфликтов с данными. Она осуществляет это с помощью проверки, внес ли другой процесс изменения в записи, с тех пор как она была открыта. Если это происходит, вызывается исключение `ActiveRecord::StaleObjectError`, и обновление игнорируется.
+Оптимистическая блокировка позволяет нескольким пользователям обращаться к одной и той же записи для редактирования и предполагает минимум конфликтов с данными. Она осуществляет это с помощью проверки, внес ли другой процесс изменения в записи, с тех пор как она была открыта. Если это происходит, вызывается исключение `ActiveRecord::StaleObjectError`, и обновление игнорируется.
 
-**Столбец оптимистичной блокировки**
+**Столбец оптимистической блокировки**
 
-Чтобы начать использовать оптимистичную блокировку, таблица должна иметь столбец, называющийся `lock_version`, с типом integer. Каждый раз, когда запись обновляется, Active Record увеличивает значение `lock_version`, и средства блокирования обеспечивают, что для записи, вызванной дважды, та, которая первая успеет будет сохранена, а для второй будет вызвано исключение `ActiveRecord::StaleObjectError`. Пример:
+Чтобы начать использовать оптимистическую блокировку, таблица должна иметь столбец, называющийся `lock_version`, с типом integer. Каждый раз, когда запись обновляется, Active Record увеличивает значение `lock_version`, и средства блокирования обеспечивают, что для записи, вызванной дважды, та, которая первая успеет, будет сохранена, а для второй будет вызвано исключение `ActiveRecord::StaleObjectError`. Пример:
 
 ```ruby
 c1 = Client.find(1)
@@ -950,9 +950,9 @@ class Client < ApplicationRecord
 end
 ```
 
-### Пессимистичная блокировка
+### Пессимистическая блокировка
 
-Пессимистичная блокировка использует механизм блокировки, предоставленный лежащей в основе базой данных. Использование `lock` при построении relation применяет эксклюзивную блокировку для выбранных строк. Relations, которые используют `lock`, обычно упакованы внутри transaction для предотвращения условий взаимной блокировки (дедлока).
+Пессимистическая блокировка использует механизм блокировки, предоставленный лежащей в основе базой данных. Использование `lock` при построении relation применяет эксклюзивную блокировку для выбранных строк. Relations, которые используют `lock`, обычно упакованы внутри transaction для предотвращения условий взаимной блокировки (дедлока).
 
 Например:
 
@@ -1074,7 +1074,7 @@ Article.joins(:category, :comments)
 
 ```sql
 SELECT articles.* FROM articles
-  INNER JOIN categories ON articles.category_id = categories.id
+  INNER JOIN categories ON categories.id = articles.category_id
   INNER JOIN comments ON comments.article_id = articles.id
 ```
 
@@ -1116,7 +1116,7 @@ SELECT categories.* FROM categories
 
 #### Определение условий в соединительных таблицах
 
-В соединительных таблицах можно определить условия, используя надлежащие [массивные](/active-record-query-interface#array-conditions) и [строковые](/active-record-query-interface#pure-string-conditions) условия. [Условия с использованием хэша](/active-record-query-interface#hash-conditions) предоставляют специальный синтаксис для определения условий в соединительных таблицах:
+В соединительных таблицах можно определить условия, используя обычные [массивные](/active-record-query-interface#array-conditions) и [строковые](/active-record-query-interface#pure-string-conditions) условия. [Условия с использованием хэша](/active-record-query-interface#hash-conditions) предоставляют специальный синтаксис для определения условий в соединительных таблицах:
 
 ```ruby
 time_range = (Time.now.midnight - 1.day)..Time.now.midnight
@@ -1217,7 +1217,7 @@ Category.includes(articles: [{ comments: :guest }, :tags]).find(1)
 Однако, если сделать так, то можно использовать `where` как обычно.
 
 ```ruby
-Article.includes(:comments).where("comments.visible" => true)
+Article.includes(:comments).where(comments: { visible: true })
 ```
 
 Это сгенерирует запрос с ограничением `LEFT OUTER JOIN`, в то время как метод `joins` сгенерировал бы его с использованием функции `INNER JOIN`.
@@ -1472,7 +1472,7 @@ Client.unscoped {
 Enum
 ----
 
-Макрос `enum` связывает числовую колонку с набором возможных значений.
+Макрос `enum` связывает числовой столбец с набором возможных значений.
 
 ```ruby
 class Book < ApplicationRecord
@@ -1538,7 +1538,7 @@ Person
   .find_by('people.name' => 'John') # это должно быть в конце
 ```
 
-Выражение выше, сгенерирует следующий SQL запрос:
+Выражение выше, сгенерирует следующий SQL-запрос:
 
 ```sql
 SELECT people.id, people.name, companies.name
@@ -1567,7 +1567,7 @@ Client.find_or_create_by(first_name: 'Andy')
 # => #<Client id: 1, first_name: "Andy", orders_count: 0, locked: true, created_at: "2011-08-30 06:09:27", updated_at: "2011-08-30 06:09:27">
 ```
 
-SQL, генерируемый этим методом, выглядит так:
+SQL, генерируемый этим методом, будет выглядеть так:
 
 ```sql
 SELECT * FROM clients WHERE (clients.first_name = 'Andy') LIMIT 1
@@ -1596,7 +1596,7 @@ Client.find_or_create_by(first_name: 'Andy') do |c|
 end
 ```
 
-Блок будет запущен только если клиент был создан. Во второй раз при запуске этого кода блок будет проигнорирован.
+Блок будет выполнен, только если клиент был создан. Во второй раз, при запуске этого кода, блок будет проигнорирован.
 
 ### `find_or_create_by!`
 
@@ -1661,10 +1661,10 @@ Client.find_by_sql("SELECT * FROM clients
 
 ### `select_all`
 
-У `find_by_sql` есть близкий родственник, называемый `connection#select_all`. `select_all` получит объекты из базы данных, используя произвольный SQL, как и в `find_by_sql`, но не создаст их экземпляры. Вместо этого, вы получите массив хэшей, где каждый хэш указывает на запись.
+У `find_by_sql` есть близкий родственник, называемый `connection#select_all`. `select_all` получит объекты из базы данных, используя произвольный SQL, как и в `find_by_sql`, но не создаст их экземпляры. Этот метод вернет экземпляр класса `ActiveRecord::Result` и вызвав `to_hash` на этом объекте вернет массив хэшей, где каждый хэш указывает на запись.
 
 ```ruby
-Client.connection.select_all("SELECT first_name, created_at FROM clients WHERE id = '1'")
+Client.connection.select_all("SELECT first_name, created_at FROM clients WHERE id = '1'").to_hash
 # => [
 #   {"first_name"=>"Rafael", "created_at"=>"2012-11-10 23:23:45.281189"},
 #   {"first_name"=>"Eileen", "created_at"=>"2013-12-09 11:22:35.221282"}
@@ -1811,14 +1811,14 @@ Article.first.categories.many?
 
 ```ruby
 Client.count
-# SELECT count(*) AS count_all FROM clients
+# SELECT COUNT(*) FROM clients
 ```
 
 Или на relation:
 
 ```ruby
 Client.where(first_name: 'Ryan').count
-# SELECT count(*) AS count_all FROM clients WHERE (first_name = 'Ryan')
+# SELECT COUNT(*) FROM clients WHERE (first_name = 'Ryan')
 ```
 
 Можно также использовать различные методы поиска на relation для выполнения сложных вычислений:
@@ -1830,9 +1830,9 @@ Client.includes("orders").where(first_name: 'Ryan', orders: { status: 'received'
 Что выполнит:
 
 ```sql
-SELECT count(DISTINCT clients.id) AS count_all FROM clients
-  LEFT OUTER JOIN orders ON orders.client_id = clients.id WHERE
-  (clients.first_name = 'Ryan' AND orders.status = 'received')
+SELECT COUNT(DISTINCT clients.id) FROM clients
+  LEFT OUTER JOIN orders ON orders.client_id = clients.id
+  WHERE (clients.first_name = 'Ryan' AND orders.status = 'received')
 ```
 
 ### Количество
@@ -1980,4 +1980,4 @@ EXPLAIN for: SELECT `articles`.* FROM `articles`  WHERE `articles`.`user_id` IN 
 
 * MariaDB: [EXPLAIN](https://mariadb.com/kb/en/mariadb/explain/)
 
-* PostgreSQL: [Using EXPLAIN](https://postgrespro.ru/docs/postgrespro/9.6/using-explain)
+* PostgreSQL: [Using EXPLAIN](https://postgrespro.ru/docs/postgrespro/current/using-explain)

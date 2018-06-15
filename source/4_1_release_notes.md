@@ -8,24 +8,23 @@
 * Action Pack Variants (шаблоны, для разных устройств)
 * Предпросмотр писем Action Mailer
 
-Эти заметки о релизе покрывают только основные обновления. Чтобы узнать о различных багфиксах и изменениях, обратитесь к логам изменений или к [списку коммитов](https://github.com/rails/rails/commits/master) в главном репозитории Rails на GitHub.
+Эти заметки о релизе покрывают только основные изменения. Чтобы узнать о различных исправлениях программных ошибок и изменениях, обратитесь к логам изменений или к [списку коммитов](https://github.com/rails/rails/commits/4-1-stable) в главном репозитории Rails на GitHub.
 
 --------------------------------------------------------------------------------
 
-Обновление до Rails 4.1
------------------------
+Апгрейд до Rails 4.1
+--------------------
 
-Если вы обновляете существующее приложение, было бы хорошо иметь перед этим покрытие тестами. Также, до попытки обновиться до Rails 4.1, необходимо сначала обновиться до Rails 4.0 и убедиться, что приложение все еще выполняется так, как нужно.
-Список вещей, которые нужно выполнить для обновления доступен в руководстве
-[Обновление Rails](/upgrading-ruby-on-rails#upgrading-from-rails-4-0-to-rails-4-1).
+Прежде чем апгрейдить существующее приложение, было бы хорошо иметь перед этим покрытие тестами. Также, до попытки обновиться до Rails 4.1, необходимо сначала произвести апгрейд до Rails 4.0 и убедиться, что приложение все еще выполняется так, как нужно.
+Список вещей, которые нужно выполнить для апгрейда доступен в руководстве
+[Апгрейд Ruby on Rails](/upgrading-ruby-on-rails#upgrading-from-rails-4-0-to-rails-4-1).
 
-
-Основные изменения
-------------------
+Основные особенности
+--------------------
 
 ### Spring Application Preloader
 
-Spring является прелоадером для Rails приложений. Он увеличивает скорость разработки, храня приложение запущенным в бэкграунде, поэтому при запуске тестов, задач rake или миграций, теперь загружать приложение каждый раз больше нет необходимости.
+Spring является прелоадером для Rails приложений. Он увеличивает скорость разработки, храня приложение запущенным в фоновом режиме, поэтому при запуске тестов, задач rake или миграций, теперь загружать приложение каждый раз больше нет необходимости.
 
 Новое Rails 4.1 приложение будет по умолчанию идти с "springified" бинстабами. Это означает, что
 `bin/rails` и `bin/rake`, будут автоматически использовать преимущества предзагруженной среды spring.
@@ -56,16 +55,16 @@ Spring is running:
 Обратитесь к [Spring README](https://github.com/jonleighton/spring/blob/master/README.md),
 чтобы увидеть все возможности.
 
-Обратитесь к руководству по [Обновлению Rails](/upgrading-ruby-on-rails#spring)
+Обратитесь к руководству [Апгрейд Ruby on Rails](/upgrading-ruby-on-rails#spring)
 - как мигрировать существующее приложение, чтобы использовать данную возможность.
 
 ### `config/secrets.yml`
 
 Rails 4.1 генерирует новый файл `secrets.yml` в директории `config`. По умолчанию,
 этот файл содержит `secret_key_base` приложения, но он так же может использоваться
-для хранения других секретных данных, таких как ключи доступа к внешним API.
+для хранения других секретов, таких как ключи доступа к внешним API.
 
-Секретные данные, добавляемые в этот файл, будут доступны с помощью `Rails.application.secrets`.
+Секреты, добавляемые в этот файл, будут доступны с помощью `Rails.application.secrets`.
 Например, для `config/secrets.yml`:
 
 ```yaml
@@ -76,13 +75,13 @@ development:
 
 `Rails.application.secrets.some_api_key` вернёт `SOMEKEY` в development окружении.
 
-Обратитесь к руководству по [Обновлению Rails](/upgrading-ruby-on-rails#config-secrets-yml)
+Обратитесь к руководству [Апгрейд Ruby on Rails](/upgrading-ruby-on-rails#config-secrets-yml)
 - как мигрировать существующее приложение, чтобы использовать данную возможность.
 
 ### Action Pack Variants
 
-Мы часто хотим рендерить разные типы шаблонов HTML/JSON/XML - для телефонов,
-планшетов и десктопных компьютеров. С помощью Variants - это легко.
+Мы часто хотим рендерить разные типы шаблонов HTML/JSON/XML для телефонов,
+планшетов и десктопных браузеров. С помощью Variants - это легко.
 
 Запрос Variants - это специальный формат запроса, например `:tablet`,
 `:phone`, или `:desktop`.
@@ -142,7 +141,7 @@ end
 так же можно увидеть полный список писем - http://localhost:3000/rails/mailers.
 
 По умолчанию, эти превью-классы располагаются в `test/mailers/previews`.
-Директорию можно легко изменить используя `preview_path` опцию.
+Директорию можно легко изменить используя опцию `preview_path`.
 
 Обратитесь к [документации](http://api.rubyonrails.org/v4.1.0/classes/ActionMailer/Base.html)
 за подробным описанием.
@@ -173,7 +172,7 @@ Conversation.statuses # => { "active" => 0, "archived" => 1 }
 ### Message Verifiers
 
 Message verifiers могут быть использованы для генерации и верификации подписанных сообщений.
-Это полезно для безопасной передачи деликатных данных, таких как токены remember-me и прочие подобные.
+Это полезно для безопасной передачи чувствительных данных, таких как токены remember-me и прочие подобные.
 
 Метод `Rails.application.message_verifier` возвращает новый Message Verifier, который подписывает сообщения с помощью ключа, созданного из secret_key_base и имени верификационного сообщения:
 
@@ -217,9 +216,9 @@ end
 
 ### CSRF защита от `<script>` тегов
 
-Защита от подделки межсайтовых запросов (CSRF) сейчас также покрывает GET запросы с откликами JavaScript. Это предотвращает от ссылок посторонних сайтов на ваши JavaScript URL и попыток запуска его для извлечения конфиденциальных данных.
+Защита от межсайтовой подделки запроса (CSRF) сейчас также покрывает GET-запросы с откликами JavaScript. Это предотвращает от ссылок сторонних сайтов на ваши JavaScript URL и попыток запуска его для извлечения чувствительных данных.
 
-Это означает, что каждый из ваших тестов, который использует `.js` URL, теперь будет провален CSRF защитой, если не используется `xhr`. Обновите ваши тесты, чтобы быть уверенными в XmlHttp запросах. Вместо `post :create, format: :js`, переключитесь на явное
+Это означает, что каждый из ваших тестов, который использует `.js` URL, теперь будет провален CSRF защитой, если не используется `xhr`. Произведите апгрейд тестов, чтобы быть уверенными в XmlHttpRequests. Вместо `post :create, format: :js`, переключитесь на явное
 `xhr :post, :create, format: :js`.
 
 Railties
@@ -239,7 +238,7 @@ Railties
 
 * Удалён устаревший метод `ActiveRecord::Generators::ActiveModel#update_attributes` в пользу `ActiveRecord::Generators::ActiveModel#update`.
 
-* Удалёна устаревшая `config.whiny_nils` опция.
+* Удалёна устаревшая опция `config.whiny_nils`.
 
 * Удалёны устаревшая задача rake для запуска тестов: `rake test:uncommitted` и
   `rake test:recent`.
@@ -247,7 +246,7 @@ Railties
 ### Значимые изменения
 
 * [Spring прелоадер](https://github.com/rails/spring) теперь устанавливается по умолчанию
-  для новых приложений. Он использует группу development в Gemfile, поэтому не будет установлен в
+  для новых приложений. Он использует группу development в `Gemfile`, поэтому не будет установлен в
   production. ([Pull Request](https://github.com/rails/rails/pull/12958))
 
 * Переменная окружения `BACKTRACE`, которая показывает нефильтрованные бэктрейсы для проваленных тестов.
@@ -349,7 +348,7 @@ Active Record
 * Удалёно устаревшее использование `scope` без передачи вызываемого объекта.
 
 * Удалён устаревший метод `transaction_joinable=` в пользу `begin_transaction`
-  с опцией `d:joinable`.
+  с опцией `:joinable`.
 
 * Удалён устаревший метод `decrement_open_transactions`.
 
@@ -382,7 +381,7 @@ Active Record
 
 * Удалена устаревшая опция `:distinct` из `Relation#count`.
 
-* Удалены устаревшие методы  `partial_updates`, `partial_updates?` и
+* Удалены устаревшие методы `partial_updates`, `partial_updates?` и
   `partial_updates=`.
 
 * Удален устаревший метод `scoped`.
@@ -461,14 +460,14 @@ Active Record
   `:inverse_of`, Active Record самостоятельно определит противоположную связь, основываясь на эвристике.
   ([Pull Request](https://github.com/rails/rails/pull/10886))
 
-* Оперирование псевдонимами атрибутов в ActiveRecord::Relation. При использовании символьных ключей, ActiveRecord теперь переведет имена-псевдонимы атрибутов к фактическим именам столбцов, используемых в базе данных. ([Pull Request](https://github.com/rails/rails/pull/7839))
+* Обработка псевдоним-атрибутов в ActiveRecord::Relation. При использовании символьных ключей ActiveRecord теперь переведет имена псевдоним-атрибутов к фактическим именам столбцов, используемых в базе данных. ([Pull Request](https://github.com/rails/rails/pull/7839))
 
 * Шаблоны ERB в фикстурах больше не вычисляются в контексте главного объекта.
   Методы хелперов, использующиеся в нескольких фикстурах, должны объявляться в модулях, включённых в `ActiveRecord::FixtureSet.context_class`. ([Pull Request](https://github.com/rails/rails/pull/13022))
 
 * Не создается или сбрасывается тестовая база данных, если явно определен RAILS_ENV. ([Pull Request](https://github.com/rails/rails/pull/13629))
 
-* У `Relation` больше нет мутирующих методов, таких как `#map!` и `#delete_if`. Преобразовывайте в массив с помощью `#to_a` перед использованием этих методов. ([Pull Request](https://github.com/rails/rails/pull/13314))
+* У `Relation` больше нет мутирующих методов (мутаторов), таких как `#map!` и `#delete_if`. Преобразовывайте в массив с помощью `#to_a` перед использованием этих методов. ([Pull Request](https://github.com/rails/rails/pull/13314))
 
 * `find_in_batches`, `find_each`, `Result#each` и `Enumerable#index_by` теперь возвращают `Enumerator`, который может вычислять свой размер. ([Pull Request](https://github.com/rails/rails/pull/13938))
 
@@ -483,7 +482,7 @@ Active Record
 
 * Миграция `change_column_null` стала обратимой. ([Commit](https://github.com/rails/rails/commit/724509a9d5322ff502aefa90dd282ba33a281a96))
 
-* Добавлен флажок для отключения дампа схемы после миграции. Он установлен `false` по умолчанию в среде production для новых приложений. ([Pull Request](https://github.com/rails/rails/pull/13948))
+* Добавлен флажок для отключения выгрузки схемы после миграции. Он установлен `false` по умолчанию в среде production для новых приложений. ([Pull Request](https://github.com/rails/rails/pull/13948))
 
 Active Model
 ------------
@@ -498,7 +497,7 @@ Active Model
 
 ### Значимые изменения
 
-*  В `ActiveModel::Dirty` добавлены новые методы API `reset_changes` и `changes_applied`, которые контролируют изменения состояния.
+* В `ActiveModel::Dirty` добавлены новые методы API `reset_changes` и `changes_applied`, которые контролируют изменения состояния.
 
 * Возможность определить несколько контекстов при определении валидации. ([Pull Request](https://github.com/rails/rails/pull/13754))
 
@@ -518,7 +517,7 @@ Active Support
 * Удалена зависимость `MultiJSON`. Теперь, `ActiveSupport::JSON.decode`
   больше не принимает хэш опций для `MultiJSON`. ([Pull Request](https://github.com/rails/rails/pull/10576) / [Подробнее](/upgrading-ruby-on-rails#changes-in-json-handling))
 
-* Удалена поддержка для хука `encode_json`, используемого для преобразования произвольных объектов в JSON. Данный функционал извлечен в гем [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder).
+* Удалена поддержка для хука `encode_json`, используемого для преобразования произвольных объектов в JSON. Данная функциональность извлечена в гем [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder).
   ([Связанный Pull Request](https://github.com/rails/rails/pull/12183) /
   [Подробнее](/upgrading-ruby-on-rails#changes-in-json-handling))
 
@@ -554,7 +553,7 @@ Active Support
 
 * Удалён устаревший метод `#filter` для объектов фильтра, используйте взамен соответствующие методы (т.е. `#before` для предварительного фильтра).
 
-* Убрано неправильное преобразование 'cow' => 'kine' из инфлектора по-умолчанию. ([Commit](https://github.com/rails/rails/commit/c300dca9963bda78b8f358dbcb59cabcdc5e1dc9))
+* Убран нерегулярный инфлектор 'cow' => 'kine' из инфлектора по умолчанию. ([Commit](https://github.com/rails/rails/commit/c300dca9963bda78b8f358dbcb59cabcdc5e1dc9))
 
 ### Устарело
 
@@ -565,13 +564,13 @@ Active Support
 * Устарело имя подключаемой директории `active_support/core_ext/object/to_json`. Подключайте
   `active_support/core_ext/object/json` взамен. ([Pull Request](https://github.com/rails/rails/pull/12203))
 
-* Устарело `ActiveSupport::JSON::Encoding::CircularReferenceError`. Данный функционал
-  был выделен в гем [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder).
+* Устарело `ActiveSupport::JSON::Encoding::CircularReferenceError`. Данная функциональность
+  была выделена в гем [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder).
   ([Pull Request](https://github.com/rails/rails/pull/12785) /
   [Подробности](/upgrading-ruby-on-rails#changes-in-json-handling))
 
-* Устарела опция `ActiveSupport.encode_big_decimal_as_string`. Данный функционал
-  был выделен в гем [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder).
+* Устарела опция `ActiveSupport.encode_big_decimal_as_string`. Данная функциональность
+  была выделена в гем [activesupport-json_encoder](https://github.com/rails/activesupport-json_encoder).
   ([Pull Request](https://github.com/rails/rails/pull/13060) /
   [Подробности](/upgrading-ruby-on-rails#changes-in-json-handling))
 
@@ -597,7 +596,7 @@ Active Support
 * Добавлен метод `Numeric#in_milliseconds`, например `1.hour.in_milliseconds`, результат которого можно скармливать в функции JavaScript, такие как `getTime()`. ([Commit](https://github.com/rails/rails/commit/423249504a2b468d7a273cbe6accf4f21cb0e643))
 
 * Добавлены методы `Date#middle_of_day`, `DateTime#middle_of_day` и `Time#middle_of_day`.
-  Так же добавлены псевдонимы `midday`, `noon`, `at_midday`, `at_noon` и
+  Также добавлены псевдонимы `midday`, `noon`, `at_midday`, `at_noon` и
   `at_middle_of_day`. ([Pull Request](https://github.com/rails/rails/pull/10879))
 
 * Добавлены `Date#all_week/month/quarter/year` для генерации интервалов дат. ([Pull Request](https://github.com/rails/rails/pull/9685))

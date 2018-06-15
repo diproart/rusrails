@@ -22,3 +22,4 @@ config/settings/production.yml
 node_modules
 source/_book
 .vscode
+source/diff.diffrake

@@ -8,14 +8,12 @@
 * Turbolinks
 * Кэширование "матрешкой" (Russian Doll Caching)
 
-Эти заметки о релизе покрывают только основные обновления. Чтобы узнать о различных багфиксах и изменениях, обратитесь к логам изменений или к [списку коммитов](https://github.com/rails/rails/commits/4-0-stable) в главном репозитории Rails на GitHub.
+Эти заметки о релизе покрывают только основные изменения. Чтобы узнать о различных исправлениях программных ошибок и изменениях, обратитесь к логам изменений или к [списку коммитов](https://github.com/rails/rails/commits/4-0-stable) в главном репозитории Rails на GitHub.
 
-Обновление до Rails 4.0
------------------------
+Апгрейд до Rails 4.0
+--------------------
 
-Если обновляете существующее приложение, было бы хорошо иметь перед этим покрытие тестами. Также, до попытки обновиться до Rails 4.0, необходимо сначала обновиться до Rails 3.2 и убедиться, что приложение все еще выполняется так, как нужно. Список вещей, которые нужно выполнить при обновлении доступен в руководстве [Обновление Ruby on Rails](/upgrading-ruby-on-rails#upgrading-from-rails-3-2-to-rails-4-0).
-
-TODO: Configuration changes in environment files
+Прежде чем апгрейдить существующее приложение, было бы хорошо иметь перед этим покрытие тестами. Также, до попытки обновиться до Rails 4.0, необходимо сначала произвести апгрейд до Rails 3.2 и убедиться, что приложение все еще выполняется так, как нужно. Список вещей, которые нужно выполнить для апгрейда доступен в руководстве [Апгрейд Ruby on Rails](/upgrading-ruby-on-rails#upgrading-from-rails-3-2-to-rails-4-0)
 
 Создание приложения Rails 4.0
 -----------------------------
@@ -51,7 +49,7 @@ $ ruby /path/to/rails/railties/bin/rails new myapp --dev
 
 [![Rails 4.0](/images/rails4_features.png)](/images/rails4_features.png)
 
-### Обновление
+### Апгрейд
 
 * **Ruby 1.9.3** ([коммит](https://github.com/rails/rails/commit/a0380e808d3dbd2462df17f5d3b7fcd8bd812496)) - Предпочтителен Ruby 2.0; требуется 1.9.3+
 * **[Новая политика устареваний](https://www.youtube.com/watch?v=z6YgD6tVPQs)** - Устаревшие особенности показывают предупреждения в Rails 4.0, и будут убраны в Rails 4.1.
@@ -60,7 +58,7 @@ $ ruby /path/to/rails/railties/bin/rails new myapp --dev
 * **Хранилище сессии ActiveRecord** ([коммит](https://github.com/rails/rails/commit/0ffe19056c8e8b2f9ae9d487b896cad2ce9387ad)) - Хранилище сессии ActiveRecord извлечено в отдельный гем. Хранение сессий в SQL затратное. Используйте вместо него сессии куки, сессии memcache или произвольные хранилища сессии.
 * **Защита от массового назначения ActiveModel** ([коммит](https://github.com/rails/rails/commit/f8c9a4d3e88181cee644f91e1342bfe896ca64c6)) - Защита от массового назначения Rails 3 устарела. Вместо нее используйте строгие параметры (strong parameters).
 * **ActiveResource** ([коммит](https://github.com/rails/rails/commit/f1637bf2bb00490203503fbd943b73406e043d1d)) - ActiveResource извлечен в отдельный гем. ActiveResource не был широко используемым.
-* **убраны vendor/plugins** ([коммит](https://github.com/rails/rails/commit/853de2bd9ac572735fa6cf59fcf827e485a231c3)) - Для управления установленными гемами используйте Gemfile.
+* **убраны vendor/plugins** ([коммит](https://github.com/rails/rails/commit/853de2bd9ac572735fa6cf59fcf827e485a231c3)) - Для управления установленными гемами используйте `Gemfile`.
 
 ### ActionPack
 
@@ -123,7 +121,7 @@ Railties
 
 ### Значимые изменения
 
-* Новые места для тестов `test/models`, `test/helpers`, `test/controllers` и `test/mailers`. Также добавлены соответствующие задачи rake. ([Pull Request](https://github.com/rails/rails/pull/7878))
+* Новые места расположения для тестов `test/models`, `test/helpers`, `test/controllers` и `test/mailers`. Также добавлены соответствующие задачи rake. ([Pull Request](https://github.com/rails/rails/pull/7878))
 
 * Исполняемые файлы приложения теперь находятся в директории `bin/`. Запустите `rake rails:update:bin` чтобы получить `bin/bundle`, `bin/rails` и `bin/rake`.
 
@@ -166,7 +164,7 @@ Active Support
 
 ### Значимые изменения
 
-* Заменен устаревший гем `memcache-client` на  `dalli` в `ActiveSupport::Cache::MemCacheStore`.
+* Заменен устаревший гем `memcache-client` на `dalli` в `ActiveSupport::Cache::MemCacheStore`.
 
 * Оптимизирован `ActiveSupport::Cache::Entry` для уменьшения расхода памяти и процессора.
 
@@ -225,17 +223,17 @@ Active Record
       Метод `change_table` также обратимый, если его блок не вызывает `remove`, `change` или `change_default`
 
     * Новый метод `reversible` делает возможным определить код для исполнения при выполнении или откате миграции.
-      Смотрите [Руководство по миграциям](/rails-database-migrations#using-reversible)
+      Смотрите руководство [Миграции Active Record](/rails-database-migrations#using-reversible)
 
-    * Новый метод `revert` обратит всю миграцию или  предоставленный блок.
+    * Новый метод `revert` обратит всю миграцию или предоставленный блок.
       Если миграция откатывается, данная миграция / блок выполняется обычно.
-      Смотрите [Руководство по миграциям](/rails-database-migrations#reverting-previous-migrations)
+      Смотрите руководство [Миграции Active Record](/rails-database-migrations#reverting-previous-migrations)
 
 * Добавлена поддержка массивов PostgreSQL. Для создания столбца array может быть использован любой тип данных, с полной поддержкой миграций и выгрузкой схемы.
 
 * Добавлен `Relation#load` для явной загрузки записи и возврата `self`.
 
-* `Model.all` теперь возвращает `ActiveRecord::Relation`, а не массив с записями. Используйте `Relation#to_a`, если вы действительно хотите массив. В некоторых особенных случаях это может вызвать повреждения при обновлении.
+* `Model.all` теперь возвращает `ActiveRecord::Relation`, а не массив с записями. Используйте `Relation#to_a`, если вы действительно хотите массив. В некоторых особенных случаях это может вызвать повреждения при апгрейде.
 
 * Добавлен `ActiveRecord::Migration.check_pending!`, вызывающий ошибку, если миграции ожидают выполнения.
 
@@ -247,7 +245,7 @@ Active Record
 
 * Убрана IdentityMap.
 
-* Убран автоматический запуск запросов EXPLAIN. Опция `active_record.auto_explain_threshold_in_seconds` больше не используется и должна быть убрана.
+* Убрано автоматическое выполнение запросов EXPLAIN. Опция `active_record.auto_explain_threshold_in_seconds` больше не используется и должна быть убрана.
 
 * Добавлены `ActiveRecord::NullRelation` и `ActiveRecord::Relation#none`, реализующие паттерн нулевого объекта для класса Relation.
 

@@ -73,7 +73,7 @@ $ rackup config.ru
 $ rackup --help
 ```
 
-### Разработка и авто-перегрузка
+### Разработка и автоматическая перезагрузка
 
 Промежуточные программы загружаются один раз и не отслеживаются на предмет изменений. Необходимо перезагрузить сервер, чтобы отразить изменения в запущенном приложении.
 
@@ -114,9 +114,11 @@ use ActiveRecord::Migration::CheckPending
 use ActionDispatch::Cookies
 use ActionDispatch::Session::CookieStore
 use ActionDispatch::Flash
+use ActionDispatch::ContentSecurityPolicy::Middleware
 use Rack::Head
 use Rack::ConditionalGet
 use Rack::ETag
+use Rack::TempfileReaper
 run MyApp::Application.routes
 ```
 
@@ -124,11 +126,11 @@ run MyApp::Application.routes
 
 ### Настройка стека промежуточных программ
 
-Rails предоставляет простой конфигурационных интерфейс `config.middleware` для добавления, удаления и изменения промежуточных программ в стеке промежуточных программ, из `application.rb` или конфигурационного файла определенной среды `environments/<environment>.rb`.
+Rails предоставляет простой конфигурационный интерфейс `config.middleware` для добавления, удаления и модифицирования промежуточных программ в стеке промежуточных программ, из `application.rb` или конфигурационного файла определенной среды `environments/<environment>.rb`.
 
 #### Добавление промежуточной программы
 
-Добавить новую промежуточную программу в стек промежуточных программ можно с использованием следующих методов:
+Добавить новую промежуточную программу в стек промежуточных программ можно с помощью следующих методов:
 
 * `config.middleware.use(new_middleware, args)` - Добавляет новую промежуточную программу в конец стека.
 
@@ -149,7 +151,7 @@ config.middleware.insert_after ActionDispatch::Executor, Lifo::Cache, page_cache
 
 #### Перемена местами промежуточных программ
 
-Поменять местами существующие промежуточные программы в стеке можно с использованием `config.middleware.swap`.
+Поменять местами существующие промежуточные программы в стеке можно с помощью `config.middleware.swap`.
 
 ```ruby
 # config/application.rb
@@ -196,7 +198,7 @@ config.middleware.delete Rack::MethodOverride
 
 ### (internal-middleware-stack) Стек внутренних промежуточных программ
 
-Значительная часть функционала Action Controller реализована как промежуточные программы. Следующий перечень объясняет назначение каждой из них:
+Значительная часть функциональности Action Controller реализована как промежуточные программы. Следующий перечень объясняет назначение каждой из них:
 
 **`Rack::Sendfile`**
 
@@ -208,7 +210,7 @@ config.middleware.delete Rack::MethodOverride
 
 **`Rack::Lock`**
 
-* Устанавливает флажок `env["rack.multithread"]` в `false` и оборачивает приложение в Mutex.
+* Устанавливает флажок `env["rack.multithread"]` в `false` и оборачивает приложение в мьютекс.
 
 **`ActionDispatch::Executor`**
 
@@ -256,7 +258,7 @@ config.middleware.delete Rack::MethodOverride
 
 **`ActionDispatch::Callbacks`**
 
-* Предоставляет колбэки для запуска до и после обработки запроса.
+* Предоставляет колбэки для выполнения до и после направления запроса.
 
 **`ActiveRecord::Migration::CheckPending`**
 
@@ -272,7 +274,11 @@ config.middleware.delete Rack::MethodOverride
 
 **`ActionDispatch::Flash`**
 
-* Настраивает ключи flash. Доступна только если `config.action_controller.session_store` присвоено значение.
+* Настраивает ключи flash. Доступно, только если `config.action_controller.session_store` присвоено значение.
+
+**`ActionDispatch::ContentSecurityPolicy::Middleware`**
+
+* Предоставляет DSL для настройки заголовка Content-Security-Policy.
 
 **`Rack::Head`**
 
@@ -286,10 +292,14 @@ config.middleware.delete Rack::MethodOverride
 
 * Добавляет заголовок ETag во все строковые тела. ETags используются для проверки кэша.
 
+**`Rack::TempfileReaper`**
+
+* Очищает временные файлы, используемые для буферизации multipart запросов.
+
 TIP: Можете использовать любые из этих промежуточных программ в своем стеке Rack.
 
 (resources) Источники
----------
+---------------------
 
 ### Обучение Rack
 
