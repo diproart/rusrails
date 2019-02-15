@@ -29,7 +29,7 @@ $ gem install rails
 Апгрейд до Rails 3
 ------------------
 
-Прежде чем апгрейдить существующее приложение, было бы хорошо иметь перед этим покрытие тестами. Также, до попытки обновиться до Rails 3, необходимо сначала произвести апгрейд до Rails 2.3.5 и убедиться, что приложение все еще выполняется так, как нужно. Затем обратите внимание на следующие изменения:
+Прежде чем апгрейднуть существующее приложение, было бы хорошо иметь перед этим покрытие тестами. Также, до попытки обновиться до Rails 3, необходимо сначала произвести апгрейд до Rails 2.3.5 и убедиться, что приложение все еще выполняется так, как нужно. Затем обратите внимание на следующие изменения:
 
 ### Rails 3 требует как минимум Ruby 1.8.7
 
@@ -230,7 +230,7 @@ Action Pack
 
 Подробнее:
 * [Render Options in Rails 3](https://www.engineyard.com/blog/render-options-in-rails-3)
-* [Three reasons to love ActionController::Responder](http://weblog.rubyonrails.org/2009/8/31/three-reasons-love-responder)
+* [Three reasons to love ActionController::Responder](https://weblog.rubyonrails.org/2009/8/31/three-reasons-love-responder)
 
 ### Action Dispatch
 

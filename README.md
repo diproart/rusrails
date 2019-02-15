@@ -20,7 +20,7 @@
 * Заполнить базу
 
     ```
-    $ rake static_docs:import
+    $ rails static_docs:import
     ```
 
 * Запустить сервер и открыть в браузере
@@ -55,9 +55,9 @@
 Алгоритм работы:
 
 * Делаете форк. [Инструкция по форкам](http://help.github.com/fork-a-repo/)
-* Выбираете руководство (степень актуальности всех руководств можно оценить с помощью `rake docrails:status`)
+* Выбираете руководство (степень актуальности всех руководств можно оценить с помощью `rails docrails:status`)
 * Открываете [issue в rusrails](https://github.com/morsbox/rusrails/issues), с пометкой о руководстве которое хотите обновить/перевести (чтобы этим руководством никто параллельно не занимался)
-* Смотрите, что изменилось - `rake 'docrails:diff[file_name]' > diff.diff` - в файле `diff.diff`
+* Смотрите, что изменилось - `rails 'docrails:diff[file_name]' > diff.diff` - в файле `diff.diff`
 * В том же файле смотрите информацию по последней ревизии и ее дате, изменяете эти данные в `source/index.yml`
 * Вносите в нужных местах исправления по диффу
 * Отправляете пул-реквест
@@ -68,3 +68,16 @@
 Есть много всяких идей, до которых руки не доходят, например, правки дизайна, социализация, расширение на другие руководства, связанные с Rails, версии в PDF/kindle и т.д.
 
 Предлагайте свои идеи, которые в состоянии реализовать. [@RusRails](http://twitter.com/rusrails)
+
+Развертывание
+-------------
+
+```
+# first, create admin user (follow deploy.rb instructions)
+ssh-add
+bundle exec cap deploy:install
+bundle exec cap deploy:setup
+bundle exec cap deploy:cold static_docs:import
+```
+
+After that, to release `bundle exec cap deploy static_docs:import`
